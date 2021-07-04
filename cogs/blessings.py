@@ -21,7 +21,6 @@ class Blessings(commands.Cog):
         self.yellow = 0xFFFF00
 
     name = "blessings"
-    name_typable = name
     description = "Count your blessings, people."
     description_long = description
 

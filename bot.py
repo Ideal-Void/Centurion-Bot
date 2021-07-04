@@ -4,6 +4,7 @@
 from os import getenv as env, listdir as ls
 from subprocess import check_output as shell
 from sys import executable as python
+from pengaelicutils import list2str
 
 
 requirements = ["discord.py", "python-dotenv", "tinydb"]
@@ -19,13 +20,8 @@ for module in requirements:
 if len(needed) > 1:
     needed.append(needed[-1])
     needed[-2] = "and"
-needed = (
-    str(needed)[1:-1]
-    .replace("'", "")
-    .replace("\\n", "")  # remove single quotes and newlines
-)
 if missing_dependencies:
-    print(f"Modules {needed} are not installed.")
+    print(f"Modules {list2str(needed, 0, True)} are not installed.")
     print("Installing them now...")
     shell([python, "-m", "pip", "install"] + requirements)
     print("Done.")
@@ -58,7 +54,7 @@ def help_menu(cog, client):
         description=cog.description_long,
         color=0xFFFF00,
     ).set_footer(
-        text=f"Command prefix is {client.command_prefix}\n<arg> = required parameter\n[arg] = optional parameter\n[arg (value)] = default value for optional parameter\n(command/command/command) = all aliases you can run the command with"
+        text=f"Command prefix is {client.command_prefix}\n<arg> = required parameter\n[arg (value)] = optional parameter and default value\n(command/command/command) = all aliases you can run the command with"
     )
     for command in cog.get_commands():
         if command.usage:
@@ -86,7 +82,6 @@ def help_menu(cog, client):
 @client.event
 async def on_ready():
     print(f"{client.description} connected to Discord.")
-    print(f"Currently on {len(client.guilds)} servers.")
 
 
 @client.command(name="help")
