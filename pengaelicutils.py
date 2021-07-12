@@ -226,6 +226,16 @@ syllables = [
     "zu",
 ]
 
+abilities = {
+    "part1": ["", "fire", "crab", "thunder", "water"],
+    "part2": ["ball", "hammer", "shock", "bolt", "gust"],
+}
+
+quirks = {
+    "part1": ["tiger", "fisherman", "owl", "mechanic", "dragon"],
+    "part2": ["eye", "dream", "ear", "mind", "strength"],
+}
+
 
 def remove_duplicates(inlist: list):
     return list(dict.fromkeys(inlist))

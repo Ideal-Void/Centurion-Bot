@@ -5,7 +5,7 @@ from discord import Embed
 from discord.ext import commands
 from subprocess import check_output as shell
 from random import choice, randint
-from pengaelicutils import list2str, Stopwatch, syllables
+from pengaelicutils import Stopwatch
 
 
 class Other(commands.Cog):
@@ -113,36 +113,6 @@ class Other(commands.Cog):
                     response = "."
                 response = f"You flipped {results.count(0)} heads and {results.count(1)} tails{response}"
         await ctx.send(":moneybag:" + response)
-
-    @commands.command(
-        name="name",
-        help="Generate a random name! They tend to be mystic-sounding :eyes:",
-        aliases=["namegen"],
-        usage="[names to generate (1)] [max syllables (3)] [min syllables (2)]",
-    )
-    async def name_generator(
-        self, ctx, amount: int = 1, upper_limit: int = 3, lower_limit: int = 2
-    ):
-        if amount > 0 and upper_limit > 0 and lower_limit > 0:
-            if not lower_limit > upper_limit:
-                await ctx.send(
-                    list2str(
-                        [
-                            "".join(
-                                [
-                                    choice(syllables)
-                                    for _ in range(randint(lower_limit, upper_limit))
-                                ]
-                            ).capitalize()
-                            for _ in range(amount)
-                        ],
-                        3,
-                    )
-                )
-            else:
-                await ctx.send("The lower limit cannot be higher than the upper limit.")
-        else:
-            await ctx.send("Values can't be zero.")
 
     @commands.group(name="stopwatch", help="Track how long something goes.")
     async def stopwatch(self, ctx):
