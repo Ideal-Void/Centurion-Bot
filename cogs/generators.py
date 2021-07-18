@@ -8,6 +8,15 @@ from pengaelicutils import list2str, syllables, abilities, quirks
 
 
 class Generators(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+        self.yellow = 0xFFFF00
+
+    name = "generators"
+    description = "Make stuff at random."
+
+    description_long = description
+
     @commands.command(
         name="name",
         help="Generate a random name! They tend to be mystic-sounding :eyes:",
