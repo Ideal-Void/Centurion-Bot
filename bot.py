@@ -38,7 +38,7 @@ client = commands.Bot(
     help_command=None,
     intents=discord.Intents.all(),
     activity=discord.Activity(
-        type=discord.ActivityType.watching, name="the Omniverses collide"
+        type=discord.ActivityType.watching, name="the Great Collision"
     ),
 )
 print("Defined client")

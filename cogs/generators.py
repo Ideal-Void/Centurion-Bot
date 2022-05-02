@@ -28,20 +28,7 @@ class Generators(commands.Cog):
     ):
         if amount > 0 and upper_limit > 0 and lower_limit > 0:
             if not lower_limit > upper_limit:
-                await ctx.send(
-                    list2str(
-                        [
-                            "".join(
-                                [
-                                    choice(syllables)
-                                    for _ in range(randint(lower_limit, upper_limit))
-                                ]
-                            ).capitalize()
-                            for _ in range(amount)
-                        ],
-                        3,
-                    )
-                )
+                await ctx.send(list2str(["".join([choice(syllables) for _ in range(randint(lower_limit, upper_limit))]).capitalize() for _ in range(amount)],3,))
             else:
                 await ctx.send("The lower limit cannot be higher than the upper limit.")
         else:
@@ -49,25 +36,20 @@ class Generators(commands.Cog):
 
     @commands.command(name="ability", help="Generate a random ability.")
     async def gena(self, ctx):
-        await ctx.send(
-            (choice((abilities["part1"])) + choice(abilities["part2"])).capitalize()
-        )
+        middle = choice(["", " "])
+        one = choice(abilities["part1"])
+        two = choice(abilities["part2"])
+        await ctx.send(one.capitalize() + middle + (two.capitalize() if (middle == " " or one == "") else two))
 
     @commands.command(name="quirk", help="Generate a random quirk.")
     async def genq(self, ctx):
-        middle = choice([" of the ", "'s "])
-        if middle == "'s ":
-            await ctx.send(
-                choice((quirks["part1"])).capitalize()
-                + middle
-                + choice(quirks["part2"]).capitalize()
-            )
+        middle = choice([" of the ", "'s ", " "])
+        one = choice(quirks["part1"])
+        two = choice(quirks["part2"])
+        if middle == " of the ":
+            await ctx.send(two.capitalize() + middle + one.capitalize())
         else:
-            await ctx.send(
-                choice((quirks["part2"])).capitalize()
-                + middle
-                + choice(quirks["part1"]).capitalize()
-            )
+            await ctx.send(one.capitalize() + middle + two.capitalize())
 
 
 def setup(client):
