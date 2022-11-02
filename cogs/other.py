@@ -1,10 +1,12 @@
 #!/usr/bin/python3.9
 # -*- coding: utf-8 -*-
 
-from discord import Embed
+from discord import Embed, File
+from discord.errors import HTTPException
 from discord.ext import commands
 from subprocess import check_output as shell
 from random import choice, randint
+from requests import get
 from pengaelicutils import Stopwatch
 
 
@@ -135,6 +137,47 @@ class Other(commands.Cog):
     @stopwatch.command(name="stop", help="Stop the stopwatch.", aliases=["end"])
     async def stopwatch_end(self, ctx):
         await ctx.send(Stopwatch.end(self))
+
+    @commands.command(name="sort", help="Sort the items in your inventory.", usage="copy/paste your inventory (`message.txt` okay)")
+    async def sort(self, ctx, inventory = None):
+        if ctx.message.attachments:
+            file = ctx.message.attachments[0]
+            if file.filename == "message.txt":
+                inventory = get(file.url).content.decode()
+        items = inventory.split("\n")
+        items_tupled = []
+        if items[-1] == "":
+            items.pop(-1)
+        for item in items:
+            if "x " in item and item[0].isdigit() and "x for" not in item:
+                it = item.split("x ", 1)
+                it.reverse()
+                it[0] = it[0]
+                items_tupled.append(it)
+            else:
+                items_tupled[-1].append(item)
+        for item in range(len(items_tupled)):
+            for item2 in range(len(items_tupled)):
+                if items_tupled[item][0] == items_tupled[item2][0] and item != item2:
+                    if items_tupled[item2][1] != 0:
+                        items_tupled[item][1] = int(items_tupled[item][1]) + int(items_tupled[item2][1])
+                        items_tupled[item2][1] = 0
+        for item in range(len(items_tupled)):
+            if len(items_tupled[item]) == 3:
+                items_tupled[item][0] = f"{items_tupled[item][0]} ({items_tupled[item][2]})\n"
+                items_tupled[item].pop(2)
+            elif len(items_tupled[item]) == 2:
+                items_tupled[item][0] += "\n"
+        [print(item) for item in items_tupled if len(item) == 4]
+        items_sorted = dict(sorted(items_tupled))
+        items_formatted = [f"{items_sorted[item]}x {item}".replace("  ", " ") for item in items_sorted if items_sorted[item] != 0]
+        try:
+            await ctx.send(items_formatted)
+        except HTTPException:
+            with open("inventory_sorted.txt", "w") as invenfile:
+                invenfile.writelines(items_formatted)
+            with open("inventory_sorted.txt", "r") as invenfile:
+                await ctx.send(file=File(invenfile, "inventory_sorted.txt"))
 
 
 def setup(client):
