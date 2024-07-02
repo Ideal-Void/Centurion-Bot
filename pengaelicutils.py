@@ -226,16 +226,5 @@ syllables = [
     "zu",
 ]
 
-quirks = {
-    "part1": ["tiger", "down", "fisherman", "owl", "gifted", "rocket", "static", "samurai", "lock", "natural", "immovable", "winter", "water", "bullet", "sumo", "body", "rock", "bug", "throat", "poison", "dragon"],
-    "part2": ["eye", "dream", "load", "ear", "mind", "scrap", "mechanic", "boost", "boots", "skills", "buster", "cure", "man", "guts", "absorb", "slam", "slayer", "proof", "dasher", "spray", "immunity", "strength"],
-}
-
-abilities = {
-    "part1": ["", "fire", "crab", "leaf", "dragon", "razor", "thunder", "sizzling", "scope", "drain", "karate", "iron", "blue", "rock", "rusted", "heat", "seed", "poison", "foam", "water"],
-    "part2": ["ball", "hammer", "rage", "bite", "punch", "chop", "shock", "shot", "blade", "assist", "block", "sword", "claw", "sickle", "gun", "shotgun", "spray", "smash", "sting", "wave", "strike", "bolt", "gust"],
-}
-
-
 def remove_duplicates(inlist: list):
     return list(dict.fromkeys(inlist))

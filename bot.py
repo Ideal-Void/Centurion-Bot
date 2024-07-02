@@ -1,13 +1,14 @@
 #!/usr/bin/python3.9
 # -*- coding: utf-8 -*-
 
+import asyncio
 from os import getenv as env, listdir as ls
 from subprocess import check_output as shell
 from sys import executable as python
 from pengaelicutils import list2str
 
 
-requirements = ["discord.py", "python-dotenv", "tinydb"]
+requirements = ["discord.py", "python-dotenv", "requests", "tinydb"]
 needed = []
 modules = [
     r.decode().split("==")[0] for r in shell([python, "-m", "pip", "freeze"]).split()
@@ -32,13 +33,13 @@ from dotenv import load_dotenv as dotenv
 
 print("Imported modules")
 client = commands.Bot(
-    command_prefix="c!",
+    command_prefix="a!",
     case_insensitive=True,
     description="Centurion Bot",
     help_command=None,
     intents=discord.Intents.all(),
     activity=discord.Activity(
-        type=discord.ActivityType.watching, name="the Great Collision"
+        type=discord.ActivityType.watching, name="Shara Ishvalda"
     ),
 )
 print("Defined client")
@@ -105,19 +106,20 @@ async def command_test(ctx, *, cogname: str = None):
 
 
 # load all the cogs
-for cog in ls("cogs"):
-    if cog.endswith(".py"):
-        client.load_extension(f"cogs.{cog[:-3]}")
-        print(f"Loaded cog {cog[:-3]}")
+async def load_cogs():
+    for cog in ls("cogs"):
+        if cog.endswith(".py"):
+            await client.load_extension(f"cogs.{cog[:-3]}")
+            print(f"Loaded cog {cog[:-3]}")
 
-while True:
-    try:
-        client.run(env("DISCORD_TOKEN"))
-    except KeyboardInterrupt:
-        print("Disconnected")
-        while True:
-            exit(0)
-    except:
-        print("Unable to connect to Discord")
-        while True:
-            exit(1)
+async def main():
+    async with client:
+        try:
+            await load_cogs()
+            await client.start(env("DISCORD_TOKEN"))
+        except KeyboardInterrupt:
+            print("Disconnected")
+            while True:
+                exit(0)
+
+asyncio.run(main())
