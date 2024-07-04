@@ -66,7 +66,7 @@ class Other(commands.Cog):
         await ctx.send(Stopwatch.end(self))
 
     @commands.command(name="sort", help="Sort the items in your inventory.", usage="copy/paste your inventory (`message.txt` okay)")
-    async def sort(self, ctx, inventory = None):
+    async def sort(self, ctx, *, inventory = None):
         if ctx.message.attachments:
             file = ctx.message.attachments[0]
             if file.filename == "message.txt":
@@ -105,7 +105,7 @@ class Other(commands.Cog):
         [print(item) for item in items_sorted if len(item) == 3]
         items_formatted = [f"{items_sorted[item]}x {item}".replace("  ", " ").replace("))",")") for item in items_sorted if items_sorted[item] != 0]
         try:
-            await ctx.send(items_formatted)
+            await ctx.send("".join(items_formatted))
         except HTTPException:
             with open("inventory_sorted.txt", "w") as invenfile:
                 invenfile.writelines(items_formatted)
