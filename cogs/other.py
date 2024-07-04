@@ -86,7 +86,7 @@ class Other(commands.Cog):
                 if "TOME" in item and "x " not in item:
                     items_tupled.append([item, "1"])
                     continue
-                it = items_tupled[-1][0][:-1] + f" ({item[:-1]})\n"
+                it = items_tupled[-1][0][:-1] + f" ({item})\n"
                 if len(findall(r"\([^\)]*\)", it)) > 1:
                     two_items = it.replace(")","",1).split("(", 1)
                     two_items[0] = two_items[0].strip() + "\n"
