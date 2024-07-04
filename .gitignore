@@ -131,3 +131,4 @@ dmypy.json
 
 *.json
 inventory_sorted.txt
+inventory_broken.csv
