@@ -39,7 +39,7 @@ client = commands.Bot(
     help_command=None,
     intents=discord.Intents.all(),
     activity=discord.Activity(
-        type=discord.ActivityType.watching, name="Shara Ishvalda"
+        type=discord.ActivityType.watching, name="the chaos settle."
     ),
 )
 print("Defined client")
