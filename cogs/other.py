@@ -19,7 +19,7 @@ class Other(commands.Cog):
 
     name = "other"
     description = "Various other things."
-    description_long = description + " All commands taken from Pengaelic Bot!"
+    description_long = description + " Some commands taken from Pengaelic Bot!"
 
     @commands.command(name="os", help="Read what OS I'm running on!", aliases=["getos"])
     async def showOS(self, ctx):
