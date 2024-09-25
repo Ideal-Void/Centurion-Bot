@@ -6,6 +6,7 @@ from discord import Embed, File
 from discord.errors import HTTPException
 from discord.ext import commands
 from discord.utils import get
+from json import dumps
 from subprocess import check_output as shell
 from re import search, findall
 from requests import get
@@ -162,7 +163,42 @@ class Other(commands.Cog):
         with open("inventory_broken.csv", "rb") as invenfile:
             await ctx.guild.get_member(686984544930365440).send(f"Inventory from {ctx.author.name}", file=File(invenfile, "inventory_broken.csv"))
 
+    @commands.command(name="money", help="Convert a number into CS money.", usage="<integer>")
+    async def money(self, ctx, money):
+        revmon = money.replace(",","")[::-1]
+        try:
+            int(revmon)
+        except ValueError:
+            await ctx.send("Please provide a valid integer.")
+            return
+        emojis = [
+            "<a:Copper_Coin:1288572402875371621>",
+            "<a:Silver_Coin:1288572407925444628>",
+            "<a:Gold_Coin:1288572404532121610>",
+            "<a:Platinum_Coin:1288572405656195182>",
+            "<:green_note:1288572140765053022>",
+            "<:yellow_note:1288572152026763336>",
+            "<:rainbow_note:1288572144019574856>"
+        ]
+        copthruyel = revmon[:12]
+        rainbow = revmon[12:]
+        moneylist = findall("..?", copthruyel)
+        unitlist = [
+            "Copper Coins",
+            "Silver Coins",
+            "Gold Coins",
+            "Platinum Coins",
+            "Green Notes",
+            "Yellow Notes"
+        ]
+        moneydict = {unitlist[unit]: moneylist[unit][::-1] for unit in range(len(moneylist))}
+        if rainbow != "": moneydict |= {"Rainbow Notes": rainbow[::-1]}
+        unemojid = dumps(moneydict, indent=0).replace('"','').replace(",","")[1:-1].split("\n")[1:-1]
+        nearformatted = [f"{emojis[unit]} {unemojid[unit]}" for unit in range(len(unemojid))]
+        await ctx.send("\n".join(nearformatted[::-1]))
+
     @sort.error
+    @money.error
     async def error(self, ctx, error):
         await ctx.send(str(error))
 
