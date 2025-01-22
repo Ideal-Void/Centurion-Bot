@@ -7,10 +7,9 @@ from discord.errors import HTTPException
 from discord.ext import commands
 from discord.utils import get
 from json import dumps
-from subprocess import check_output as shell
 from re import search, findall
 from requests import get
-from pengaelicutils import Stopwatch
+from subprocess import check_output as shell
 
 
 class Other(commands.Cog):
@@ -20,7 +19,7 @@ class Other(commands.Cog):
 
     name = "other"
     description = "Various other things."
-    description_long = description + " Some commands taken from Pengaelic Bot!"
+    description_long = description + " OS command taken from Pengaelic Bot"
 
     @commands.command(name="os", help="Read what OS I'm running on!", aliases=["getos"])
     async def showOS(self, ctx):
@@ -43,28 +42,6 @@ class Other(commands.Cog):
                 .split(":")[1][1:-2]
             )
         await ctx.send(f"I'm running on {system}, kernel version {kernel}")
-
-    @commands.group(name="stopwatch", help="Track how long something goes.")
-    async def stopwatch(self, ctx):
-        if ctx.invoked_subcommand == None:
-            await ctx.send(
-                embed=Embed(
-                    title="Stopwatch",
-                    description="Track how long something goes.",
-                    color=self.yellow,
-                )
-                .add_field(name="(start/begin)", value="Start the stopwatch.")
-                .add_field(name="(stop/end)", value="Stop the stopwatch.")
-            )
-
-    @stopwatch.command(name="start", help="Start the stopwatch.", aliases=["begin"])
-    async def stopwatch_start(self, ctx):
-        Stopwatch.start(self)
-        await ctx.send("Started the stopwatch.")
-
-    @stopwatch.command(name="stop", help="Stop the stopwatch.", aliases=["end"])
-    async def stopwatch_end(self, ctx):
-        await ctx.send(Stopwatch.end(self))
 
     @commands.command(name="sort", help="Sort the items in your inventory.", usage="copy/paste your inventory (`message.txt` okay)")
     async def sort(self, ctx, *, inventory = None):
@@ -196,6 +173,22 @@ class Other(commands.Cog):
         unemojid = dumps(moneydict, indent=0).replace('"','').replace(",","")[1:-1].split("\n")[1:-1]
         nearformatted = [f"{emojis[unit]} {unemojid[unit]}" for unit in range(len(unemojid))]
         await ctx.send("\n".join(nearformatted[::-1]))
+
+    @commands.command(name="currency", help="Convert between different currencies (default AUD to USD).", usage="<amount> [to (USD)] [from (AUD)]")
+    async def convertCurrency(self, ctx, value: float, target="USD", currency="AUD"):
+        async with ctx.typing():
+            response = get(f"https://v6.exchangerate-api.com/v6/90d0a51a3aabd3146a7e829a/pair/{currency}/{target}/{value}")
+            data = response.json()
+        await ctx.send(f"${value} {currency} = ${data['conversion_result']} {target}\nDISCLAIMER: Conversion data may be slightly out of date")
+
+    @commands.command(name="prices", help="Get the prices of private sessions (and in your local currency, too!)", usage="[currency (USD)]")
+    async def getSessinPrices(self, ctx, target="USD"):
+        async with ctx.typing():
+            response = get(f"https://v6.exchangerate-api.com/v6/90d0a51a3aabd3146a7e829a/pair/AUD/{target}/25")
+            single = response.json()
+            response = get(f"https://v6.exchangerate-api.com/v6/90d0a51a3aabd3146a7e829a/pair/AUD/{target}/95")
+            month = response.json()
+        await ctx.send(f"One private session: $25 AUD (${single['conversion_result']} {target.upper()})\nMonth of sessions (4 sessions): $95 AUD (${month['conversion_result']} {target.upper()})\nDISCLAIMER: Conversion data may be slightly out of date")
 
     @sort.error
     @money.error
